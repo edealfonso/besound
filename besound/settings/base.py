@@ -162,3 +162,8 @@ STATIC_ROOT = BASE_DIR.child('staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR.child('media')
+
+
+
+# Customize auth system
+# AUTH_USER_MODEL = "custom_users.CustomUser"
