@@ -1,0 +1,30 @@
+#  Django  #
+############
+
+media/
+staticfiles/
+*.log
+*.pot
+*.pyc
+__pycache__/
+manage.py
+secret.json
+
+
+#  OS generated files  #
+########################
+
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+
+#  node  #
+##########
+
+node_modules/
+package-lock.json
