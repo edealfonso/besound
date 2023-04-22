@@ -24,10 +24,10 @@ class SignupPage(SingletonModel):
     class Meta:
         verbose_name = "Login Page"
 
-# class CustomUser(AbstractUser):
-#     first_name = models.CharField(max_length=255)
-#     last_name = models.CharField(max_length=255)
-#     birth_date = models.DateField()
-#     nationality = models.CharField(max_length=255)
-#     email = models.EmailField(unique = True)
+class CustomUser(AbstractUser):
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    birth_date = models.DateField()
+    nationality = models.CharField(max_length=255)
+    email = models.EmailField(unique = True)
 

@@ -166,4 +166,4 @@ MEDIA_ROOT = BASE_DIR.child('media')
 
 
 # Customize auth system
-# AUTH_USER_MODEL = "custom_users.CustomUser"
+AUTH_USER_MODEL = "custom_users.CustomUser"
