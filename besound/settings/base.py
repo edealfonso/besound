@@ -10,34 +10,69 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from pathlib import Path
+import json
+import os
+
+# from pathlib import Path
+from unipath import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).ancestor(3)
+# BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-5el09c_84v+(e6g_)8cko+3t2#tx0tfw2&*l!6s!uhxw!7ed++'
+with open("secret.json") as f:
+    secret = json.loads(f.read())
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+def get_secret(secret_name, secrets=secret):
+    try:
+        return secrets[secret_name]
+    except:
+        msg = "La variable %s no existe" % secret_name
+        raise ImproperlyConfigured(msg)
 
-ALLOWED_HOSTS = []
+
+SECRET_KEY = get_secret('SECRET_KEY')
+
 
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-]
+)
+LOCAL_APPS = (
+    # 'apps.home',
+    # 'apps.about',
+    # 'apps.contact',
+    # 'apps.projects',
+    # 'apps.general',
+)
+
+THIRD_PARTY_APPS = (
+    # 'modeltranslation',
+    # 'webpack_loader',
+    # 'ckeditor',
+    # 'adminsortable',
+    # 'autoslug',
+    # 'sorl.thumbnail',
+    # 'solo',
+    # 'model_clone',
+    # 'sortedm2m',
+    # 'sortedm2m_filter_horizontal_widget',
+    # 'pageblocks'
+)
+
+INSTALLED_APPS = THIRD_PARTY_APPS + DJANGO_APPS + LOCAL_APPS 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,7 +89,10 @@ ROOT_URLCONF = 'besound.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+
+        # 'DIRS': [],
+        'DIRS': [BASE_DIR.child('templates')],
+
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -70,15 +108,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'besound.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 
 # Password validation
@@ -114,10 +144,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
