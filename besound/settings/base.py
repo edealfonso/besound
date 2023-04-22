@@ -51,11 +51,10 @@ DJANGO_APPS = (
     'django.contrib.staticfiles',
 )
 LOCAL_APPS = (
-    # 'apps.home',
-    # 'apps.about',
-    # 'apps.contact',
-    # 'apps.projects',
-    # 'apps.general',
+    'apps.home',
+    'apps.about',
+    'apps.custom_user',
+    'apps.posts',
 )
 
 THIRD_PARTY_APPS = (
