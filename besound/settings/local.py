@@ -28,24 +28,3 @@ DATABASES = {
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
-# custom
-STATICFILES_DIRS = [BASE_DIR.child('static'),]
-STATIC_ROOT = BASE_DIR.child('staticfiles')
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR.child('media')
-
-
-
-# WEBPACK LOADER
-
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'CACHE': not DEBUG,
-        'BUNDLE_DIR_NAME': 'bundles/',
-        'POLL_INTERVAL': 0.1,
-        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
-        'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
-    }
-}

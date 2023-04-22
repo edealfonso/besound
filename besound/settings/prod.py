@@ -35,13 +35,3 @@ DATABASES = {
 
 STATIC_URL = '/staticfiles/'
 
-# custom
-STATICFILES_DIRS = [BASE_DIR.child('static'),]
-STATIC_ROOT = BASE_DIR.child('staticfiles')
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR.child('media')
-
-# file permissions
-FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755
-FILE_UPLOAD_PERMISSIONS = 0o644
