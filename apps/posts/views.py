@@ -19,7 +19,7 @@ class PostList_APIView(APIView):
         return Response(serializer.data)
 
 
-class CreatePost_APIView(APIView):
+class PostCreate_APIView(APIView):
     # permission_classes = [IsAuthenticated]
     # parser_classes = [FileUploadParser]
 
