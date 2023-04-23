@@ -14,7 +14,7 @@ class AboutPage(SingletonModel):
 class Step(models.Model):
     text = models.TextField()
     image = models.FileField(blank=True)
-    page = models.ForeignKey(to=AboutPage, on_delete=models.PROTECT)
+    page = models.ForeignKey(to=AboutPage, related_name='steps', on_delete=models.PROTECT)
 
     def __str__(self):
         return self.text[:50]

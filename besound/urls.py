@@ -21,11 +21,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include('rest_framework.urls', namespace='rest_framework')),
 
-    # path('', include('apps.home.urls')),
-    # path('', include('apps.about.urls')),
+    path('', include('apps.home.urls')),
+    path('', include('apps.about.urls')),
     path('', include('apps.custom_users.urls')),
-    # path('', include('apps.posts.urls')),
+    path('', include('apps.posts.urls')),
 
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 

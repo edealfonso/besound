@@ -62,6 +62,7 @@ THIRD_PARTY_APPS = (
     'solo',
     'adminsortable',
     'ckeditor',
+    'rest_framework'
     # 'modeltranslation',
     # 'webpack_loader',
     # 'sorl.thumbnail',
@@ -167,3 +168,11 @@ MEDIA_ROOT = BASE_DIR.child('media')
 
 # Customize auth system
 AUTH_USER_MODEL = "custom_users.CustomUser"
+
+
+# Rest framework
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}

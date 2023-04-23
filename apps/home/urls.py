@@ -1,9 +1,9 @@
-from django.urls import path
+from django.urls import include, path
 
-from .views import *
+from .views import HomePage_APIView
 
 app_name = 'home_app'
 
 urlpatterns = [
-    #path('/capsules-event', HomeArtView.as_view(), name="capsules-event"),
+    path('v1/home', HomePage_APIView.as_view()), 
 ]

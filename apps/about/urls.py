@@ -1,9 +1,10 @@
 from django.urls import path
 
-from .views import *
+from apps.about.views import AboutPage_APIView
+
 
 app_name = 'about__app'
 
 urlpatterns = [
-    #path('/capsules-event', HomeArtView.as_view(), name="capsules-event"),
+    path('v1/about', AboutPage_APIView.as_view()), 
 ]
