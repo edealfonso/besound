@@ -1,3 +1,6 @@
 from django.contrib import admin
+from apps.home.models import HomePage
+from solo.admin import SingletonModelAdmin
 
-# Register your models here.
+
+admin.site.register(HomePage, SingletonModelAdmin)

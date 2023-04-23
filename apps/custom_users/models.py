@@ -4,8 +4,8 @@ from apps.custom_users.manager import CustomUserManager
 from solo.models import SingletonModel
 
 class LoginPage(SingletonModel):
-    instruction = models.CharField(max_length=255)
-    button = models.CharField(max_length=255)
+    instruction = models.TextField(blank=True)
+    button = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         return "Login Page"
@@ -13,20 +13,22 @@ class LoginPage(SingletonModel):
         verbose_name = "Login Page"
 
 class SignupPage(SingletonModel):
-    text_1 = models.CharField(max_length=255)
-    text_2 = models.CharField(max_length=255)
-    button_login = models.CharField(max_length=255)
-    text_3 = models.CharField(max_length=255)
-    text_4 = models.CharField(max_length=255)
-    button_end = models.CharField(max_length=255)
+    text_1 = models.TextField(blank=True)
+    text_2 = models.TextField(blank=True)
+    button_login = models.CharField(max_length=255, blank=True)
+    text_3 = models.TextField(blank=True)
+    text_4 = models.TextField(blank=True)
+    button_end = models.CharField(max_length=255, blank=True)
+    confirmation_pre = models.CharField(max_length=20, blank=True)
+    confirmation_post = models.TextField(blank=True)
 
     def __str__(self):
-        return "Login Page"
+        return "Signup Page"
     class Meta:
-        verbose_name = "Login Page"
+        verbose_name = "Signup Page"
 
 class CustomUser(AbstractUser):
-    # username = None
+    username = None
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     birth_date = models.DateField()
@@ -40,3 +42,6 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+    
+    class Meta:
+        ordering = ['email']

@@ -58,13 +58,13 @@ LOCAL_APPS = (
 )
 
 THIRD_PARTY_APPS = (
+    'autoslug',
+    'solo',
+    'adminsortable',
+    'ckeditor',
     # 'modeltranslation',
     # 'webpack_loader',
-    # 'ckeditor',
-    # 'adminsortable',
-    # 'autoslug',
     # 'sorl.thumbnail',
-    # 'solo',
     # 'model_clone',
     # 'sortedm2m',
     # 'sortedm2m_filter_horizontal_widget',
