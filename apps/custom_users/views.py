@@ -13,8 +13,7 @@ from rest_framework import status
 
 # from django.db.models import Q
 
-# PAGES
-class LoginPage_APIView(APIView):
+class Login_APIView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, format=None, *args, **kwargs):
@@ -23,21 +22,7 @@ class LoginPage_APIView(APIView):
 
         return Response(serializer.data)
     
-class SignupPage_APIView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request, format=None, *args, **kwargs):
-        page = SignupPage.objects.first()
-        serializer = SignupPageSerializer(page, context={'request': request })
-
-        return Response(serializer.data)
-    
-
-# LOGIN
-class UserLogin_APIView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request, format=None, *args, **kwargs):
+    def post (self, request, format=None, *args, **kwargs):
         print(request.data)
         user = CustomUser.objects.filter(email=request.data['email'])
         serializer = UserLoginSerializer(user)
@@ -45,10 +30,18 @@ class UserLogin_APIView(APIView):
         return Response(serializer.data)
 
 
-# CREATE
-class UserCreate_APIView(APIView):
-    # permission_classes = [AllowAny]
+class Signup_APIView(APIView):
+    permission_classes = [AllowAny]
 
+    def get_object(self):
+        return self.request.user
+
+    def get(self, request, format=None, *args, **kwargs):
+        page = SignupPage.objects.first()
+        serializer = SignupPageSerializer(page, context={'request': request })
+
+        return Response(serializer.data)
+    
     def post(self, request, format=None):        
         serializer = UserCreateSerializer(data=request.data)
         if serializer.is_valid():
