@@ -31,19 +31,19 @@ class PostCreate_APIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class PostDelete_APIView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
+# class PostDelete_APIView(APIView):
+#     permission_classes = [IsAuthenticated, IsAdminUser]
 
-    def get_object(self, pk):
-        try:
-            return Post.objects.get(pk=pk)
-        except Post.DoesNotExist:
-            raise Http404
+#     def get_object(self, pk):
+#         try:
+#             return Post.objects.get(pk=pk)
+#         except Post.DoesNotExist:
+#             raise Http404
 
-    def delete(self, request, pk, format=None):
-        post = self.get_object(pk)
-        post.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+#     def delete(self, request, pk, format=None):
+#         post = self.get_object(pk)
+#         post.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
@@ -52,6 +52,6 @@ class RecordPage_APIView(APIView):
 
     def get(self, request, format=None, *args, **kwargs):
         post = RecordPage.objects.first()
-        serializer = RecordPageSerializer(post, context={'request': request})
+        serializer = RecordPageSerializer(post)
 
         return Response(serializer.data)

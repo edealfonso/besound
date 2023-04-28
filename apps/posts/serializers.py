@@ -12,10 +12,6 @@ class PostCreateSerializer(serializers.HyperlinkedModelSerializer):
         model = Post
         fields = ['name', 'audio']
 
-    def create(self, validated_data):
-        return Post.objects.create(**validated_data)
-
-
 class RecordPageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RecordPage

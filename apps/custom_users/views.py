@@ -7,18 +7,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-# from django.db.models import Q
-
-class Login_APIView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request, format=None, *args, **kwargs):
-        page = LoginPage.objects.first()
-        serializer = LoginPageSerializer(page, context={'request': request })
-
-        return Response(serializer.data)
-
-
 class Register_APIView(APIView):
     permission_classes = [AllowAny]
 
@@ -27,7 +15,7 @@ class Register_APIView(APIView):
 
     def get(self, request, format=None, *args, **kwargs):
         page = RegisterPage.objects.first()
-        serializer = RegisterPageSerializer(page, context={'request': request })
+        serializer = RegisterPageSerializer(page)
         return Response(serializer.data)
     
     def post(self, request, format=None):        
@@ -36,3 +24,20 @@ class Register_APIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class RegisterPage_APIView(APIView):
+    def get(self, request, format=None, *args, **kwargs):
+        page = RegisterPage.objects.first()
+        serializer = RegisterPageSerializer(page)
+
+        return Response(serializer.data)
+
+class LoginPage_APIView(APIView):
+    def get(self, request, format=None, *args, **kwargs):
+        page = LoginPage.objects.first()
+        serializer = LoginPageSerializer(page)
+
+        return Response(serializer.data)

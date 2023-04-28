@@ -6,13 +6,6 @@ from django.contrib.auth import authenticate
 ##### FORMS (post)
 
 class RegisterSerializer(serializers.ModelSerializer):
-
-    password = serializers.CharField(
-        max_length = 128,
-        min_length = 6,
-        write_only = True
-    )
-
     class Meta:
         model = CustomUser
         fields = [
@@ -23,10 +16,12 @@ class RegisterSerializer(serializers.ModelSerializer):
             'birth_date',
             'password',
         ]
-    
-    def create(self, validated_data):
-        return CustomUser.objects.create_user(**validated_data)
 
+    def create(self, validated_data):
+        user = CustomUser.objects.create(**validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 ##### PAGES (get)
 class LoginPageSerializer(serializers.HyperlinkedModelSerializer):
