@@ -43,6 +43,7 @@ class Post(models.Model):
     slug = AutoSlugField(unique=True, editable=False, populate_from='name')
     audio = models.FileField(upload_to="audio")
     effect = models.ForeignKey(to=Effect, on_delete=models.SET_NULL, blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name

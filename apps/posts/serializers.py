@@ -12,3 +12,5 @@ class PostCreateSerializer(serializers.HyperlinkedModelSerializer):
         model = Post
         fields = ['name', 'audio', 'effect']
 
+    def create(self, validated_data):
+        return Post.objects.create(**validated_data)

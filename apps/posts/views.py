@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.parsers import FileUploadParser
+from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
 
 
 class PostList_APIView(APIView):
@@ -22,9 +22,10 @@ class PostList_APIView(APIView):
 class PostCreate_APIView(APIView):
     # permission_classes = [IsAuthenticated]
     # parser_classes = [FileUploadParser]
+    parser_classes = [MultiPartParser, FormParser]
 
-    def post(self, request, format=None):
-        file_obj = request.data['file']
+    def post(self, request, *args, **kwrags):
+        # file_obj = request.data['file']
         
         serializer = PostCreateSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():

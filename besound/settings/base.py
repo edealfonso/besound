@@ -62,7 +62,9 @@ THIRD_PARTY_APPS = (
     'solo',
     'adminsortable',
     'ckeditor',
-    'rest_framework'
+    'rest_framework',
+    'rest_framework.authtoken',
+
     # 'modeltranslation',
     # 'webpack_loader',
     # 'sorl.thumbnail',
@@ -176,3 +178,13 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
 }
+
+# SITE_ID = 1
+
+# AUTHENTICATION_BACKENDS = [
+#     # Needed to login by username in Django admin, regardless of `allauth`
+#     'django.contrib.auth.backends.ModelBackend',
+
+#     # `allauth` specific authentication methods, such as login by e-mail
+#     'allauth.account.auth_backends.AuthenticationBackend',
+# ]
