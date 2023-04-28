@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from apps.custom_users.forms import CustomUserChangeForm, CustomUserCreationForm
 from solo.admin import SingletonModelAdmin
 
-from apps.custom_users.models import CustomUser, LoginPage, SignupPage
+from apps.custom_users.models import CustomUser, LoginPage, RegisterPage
 
 # Register your models here.
 
@@ -47,5 +47,5 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(CustomUser, CustomUserAdmin)
 
 
-admin.site.register(SignupPage, SingletonModelAdmin)
+admin.site.register(RegisterPage, SingletonModelAdmin)
 admin.site.register(LoginPage, SingletonModelAdmin)

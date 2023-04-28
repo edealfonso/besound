@@ -60,18 +60,9 @@ LOCAL_APPS = (
 THIRD_PARTY_APPS = (
     'autoslug',
     'solo',
-    'adminsortable',
     'ckeditor',
     'rest_framework',
     'rest_framework.authtoken',
-
-    # 'modeltranslation',
-    # 'webpack_loader',
-    # 'sorl.thumbnail',
-    # 'model_clone',
-    # 'sortedm2m',
-    # 'sortedm2m_filter_horizontal_widget',
-    # 'pageblocks'
 )
 
 INSTALLED_APPS = THIRD_PARTY_APPS + DJANGO_APPS + LOCAL_APPS 
@@ -167,24 +158,12 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR.child('media')
 
 
-
 # Customize auth system
 AUTH_USER_MODEL = "custom_users.CustomUser"
 
-
 # Rest framework
-
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
 }
-
-# SITE_ID = 1
-
-# AUTHENTICATION_BACKENDS = [
-#     # Needed to login by username in Django admin, regardless of `allauth`
-#     'django.contrib.auth.backends.ModelBackend',
-
-#     # `allauth` specific authentication methods, such as login by e-mail
-#     'allauth.account.auth_backends.AuthenticationBackend',
-# ]

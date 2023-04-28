@@ -12,7 +12,7 @@ class LoginPage(SingletonModel):
     class Meta:
         verbose_name = "Login Page"
 
-class SignupPage(SingletonModel):
+class RegisterPage(SingletonModel):
     text_1 = models.TextField(blank=True)
     text_2 = models.TextField(blank=True)
     button_login = models.CharField(max_length=255, blank=True)
@@ -23,9 +23,9 @@ class SignupPage(SingletonModel):
     confirmation_post = models.TextField(blank=True)
 
     def __str__(self):
-        return "Signup Page"
+        return "Register Page"
     class Meta:
-        verbose_name = "Signup Page"
+        verbose_name = "Register Page"
 
 class CustomUser(AbstractUser):
     username = None

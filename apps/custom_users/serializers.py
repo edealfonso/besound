@@ -1,4 +1,4 @@
-from apps.custom_users.models import CustomUser, LoginPage, SignupPage
+from apps.custom_users.models import CustomUser, LoginPage, RegisterPage
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 
@@ -27,11 +27,6 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return CustomUser.objects.create_user(**validated_data)
 
-# class LoginSerializer(serializers.HyperlinkedModelSerializer):
-#     class Meta:
-#         model = CustomUser
-#         fields = ['name', 'password']
-
 
 ##### PAGES (get)
 class LoginPageSerializer(serializers.HyperlinkedModelSerializer):
@@ -42,9 +37,9 @@ class LoginPageSerializer(serializers.HyperlinkedModelSerializer):
             'button',
             ]
 
-class SignupPageSerializer(serializers.HyperlinkedModelSerializer):
+class RegisterPageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = SignupPage
+        model = RegisterPage
         fields = [
             'text_1', 
             'text_2',
@@ -55,39 +50,3 @@ class SignupPageSerializer(serializers.HyperlinkedModelSerializer):
             'confirmation_pre',
             'confirmation_post',
             ]
-
-
-
-# class AuthCustomTokenSerializer(serializers.Serializer):
-#     email_or_username = serializers.CharField()
-#     password = serializers.CharField()
-
-#     def validate(self, attrs):
-#         email_or_username = attrs.get('email_or_username')
-#         password = attrs.get('password')
-
-#         if email_or_username and password:
-#             # Check if user sent email
-#             if validateEmail(email_or_username):
-#                 user_request = get_object_or_404(
-#                     CustomUser,
-#                     email=email_or_username,
-#                 )
-
-#                 email_or_username = user_request.username
-
-#             user = authenticate(username=email_or_username, password=password)
-
-#             if user:
-#                 if not user.is_active:
-#                     msg = _('User account is disabled.')
-#                     raise exceptions.ValidationError(msg)
-#             else:
-#                 msg = _('Unable to log in with provided credentials.')
-#                 raise exceptions.ValidationError(msg)
-#         else:
-#             msg = _('Must include "email or username" and "password"')
-#             raise exceptions.ValidationError(msg)
-
-#         attrs['user'] = user
-#         return attrs

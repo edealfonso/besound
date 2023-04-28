@@ -6,5 +6,5 @@ from apps.about.views import AboutPage_APIView
 app_name = 'about__app'
 
 urlpatterns = [
-    path('v1/about', AboutPage_APIView.as_view()), 
+    path('v1/page/about', AboutPage_APIView.as_view()), 
 ]

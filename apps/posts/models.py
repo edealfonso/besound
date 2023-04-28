@@ -1,7 +1,6 @@
 from django.db import models
 from solo.models import SingletonModel
 from autoslug import AutoSlugField
-from adminsortable.models import SortableMixin
 from ckeditor.fields import RichTextField
 
 class RecordPage(SingletonModel):
@@ -27,22 +26,11 @@ class RecordPage(SingletonModel):
         return "Record Page"
     class Meta:
         verbose_name = "Record Page"
-
-class Effect(SortableMixin):
-    name = models.CharField(max_length=100)
-    slug = AutoSlugField(unique=True, editable=False, populate_from='name')
-    the_order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
-
-    def __str__(self):
-        return self.name
-    
-    class Meta:
-        ordering = ['the_order']
+        
 class Post(models.Model):
     name = models.CharField(max_length=100)
     slug = AutoSlugField(unique=True, editable=False, populate_from='name')
     audio = models.FileField(upload_to="audio")
-    effect = models.ForeignKey(to=Effect, on_delete=models.SET_NULL, blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

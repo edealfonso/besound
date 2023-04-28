@@ -1,5 +1,5 @@
-from apps.custom_users.models import LoginPage, SignupPage
-from apps.custom_users.serializers import LoginPageSerializer, RegisterSerializer, SignupPageSerializer
+from apps.custom_users.models import LoginPage, RegisterPage
+from apps.custom_users.serializers import LoginPageSerializer, RegisterPageSerializer, RegisterSerializer
 
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -17,13 +17,6 @@ class Login_APIView(APIView):
         serializer = LoginPageSerializer(page, context={'request': request })
 
         return Response(serializer.data)
-    
-    # def post (self, request, format=None, *args, **kwargs):
-    #     print(request.data)
-    #     user = CustomUser.objects.filter(email=request.data['email'])
-    #     serializer = LoginSerializer(user)
-
-    #     return Response(serializer.data)
 
 
 class Register_APIView(APIView):
@@ -33,8 +26,8 @@ class Register_APIView(APIView):
         return self.request.user
 
     def get(self, request, format=None, *args, **kwargs):
-        page = SignupPage.objects.first()
-        serializer = SignupPageSerializer(page, context={'request': request })
+        page = RegisterPage.objects.first()
+        serializer = RegisterPageSerializer(page, context={'request': request })
         return Response(serializer.data)
     
     def post(self, request, format=None):        
