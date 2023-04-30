@@ -5,5 +5,5 @@ from .views import HomePage_APIView
 app_name = 'home_app'
 
 urlpatterns = [
-    path('v1/page/home', HomePage_APIView.as_view()), 
+    path('v1/home', HomePage_APIView.as_view()), 
 ]

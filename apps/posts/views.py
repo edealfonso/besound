@@ -1,7 +1,7 @@
 from apps.posts.models import Post, RecordPage
 from apps.posts.serializers import PostListSerializer, PostCreateSerializer, RecordPageSerializer
 
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,12 +11,10 @@ from django.http import Http404
 
 
 class PostList_APIView(APIView):
-    permission_classes = [AllowAny]
 
     def get(self, request, format=None, *args, **kwargs):
         post = Post.objects.all()
         serializer = PostListSerializer(post, many=True, context={'request': request})
-
         return Response(serializer.data)
 
 
@@ -30,6 +28,12 @@ class PostCreate_APIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, format=None, *args, **kwargs):
+        post = RecordPage.objects.first()
+        serializer = RecordPageSerializer(post)
+        return Response(serializer.data)
+    
 
 # class PostDelete_APIView(APIView):
 #     permission_classes = [IsAuthenticated, IsAdminUser]
@@ -46,12 +50,3 @@ class PostCreate_APIView(APIView):
 #         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-
-class RecordPage_APIView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, format=None, *args, **kwargs):
-        post = RecordPage.objects.first()
-        serializer = RecordPageSerializer(post)
-
-        return Response(serializer.data)
