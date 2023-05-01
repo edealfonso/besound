@@ -9,6 +9,6 @@ class HomePage_APIView(APIView):
 
     def get(self, request, format=None, *args, **kwargs):
         post = HomePage.objects.first()
-        serializer = HomePageSerializer(post, context={'request': request})
+        serializer = HomePageSerializer(post)
 
         return Response(serializer.data)

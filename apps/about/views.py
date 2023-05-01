@@ -12,5 +12,5 @@ class AboutPage_APIView(APIView):
     def get(self, request, format=None, *args, **kwargs):
         page = AboutPage.objects.first()
         serializer = AboutPageSerializer(page, context={'request': request })
-
+        
         return Response(serializer.data)

@@ -7,10 +7,13 @@ class PostListSerializer(serializers.HyperlinkedModelSerializer):
         model = Post
         fields = ['id', 'name', 'slug', 'audio' ]
 
+
 class PostCreateSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
     class Meta:
         model = Post
-        fields = ['name', 'audio']
+        fields = ['id', 'name', 'audio']
+
 
 class RecordPageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

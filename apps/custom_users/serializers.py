@@ -23,6 +23,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+
 ##### PAGES (get)
 class LoginPageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -31,6 +32,7 @@ class LoginPageSerializer(serializers.HyperlinkedModelSerializer):
             'instruction', 
             'button',
             ]
+
 
 class RegisterPageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

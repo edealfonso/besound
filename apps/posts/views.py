@@ -24,29 +24,41 @@ class PostCreate_APIView(APIView):
 
     def post(self, request, *args, **kwrags):        
         serializer = PostCreateSerializer(data=request.data, context={'request': request})
+
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(author=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, format=None, *args, **kwargs):
         post = RecordPage.objects.first()
-        serializer = RecordPageSerializer(post)
+        serializer = RecordPageSerializer(post, context={'request': request})
+
         return Response(serializer.data)
     
 
-# class PostDelete_APIView(APIView):
-#     permission_classes = [IsAuthenticated, IsAdminUser]
+class PostDelete_APIView(APIView):
+    permission_classes = [IsAuthenticated]
 
-#     def get_object(self, pk):
-#         try:
-#             return Post.objects.get(pk=pk)
-#         except Post.DoesNotExist:
-#             raise Http404
+    def get_post(self, id):
+        try:
+            return Post.objects.get(id=id)
+        except Post.DoesNotExist:
+            raise Http404
 
-#     def delete(self, request, pk, format=None):
-#         post = self.get_object(pk)
-#         post.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, id, format=None):
+        print('*****')
+        print('*****')
+        print(id)
+        print('*****')
+        print('*****')
+        post = self.get_post(id)
+        if (post.author == request.user):
+            post.delete()
+            return Response({
+                "message": 'Successfully deleted post with id ' + id
+            }, status=status.HTTP_204_NO_CONTENT)
+        else:
+            Response(status=status.HTTP_401_UNAUTHORIZED)
 
 

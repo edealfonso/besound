@@ -1,4 +1,6 @@
+import uuid
 from django.db import models
+from apps.custom_users.models import CustomUser
 from solo.models import SingletonModel
 from autoslug import AutoSlugField
 from ckeditor.fields import RichTextField
@@ -28,10 +30,12 @@ class RecordPage(SingletonModel):
         verbose_name = "Record Page"
         
 class Post(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     slug = AutoSlugField(unique=True, editable=False, populate_from='name')
     audio = models.FileField(upload_to="audio")
     timestamp = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(to=CustomUser, related_name='post_author', on_delete=models.PROTECT)
 
     def __str__(self):
         return self.name
