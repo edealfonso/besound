@@ -47,18 +47,13 @@ class PostDelete_APIView(APIView):
             raise Http404
 
     def delete(self, request, id, format=None):
-        print('*****')
-        print('*****')
-        print(id)
-        print('*****')
-        print('*****')
         post = self.get_post(id)
+
         if (post.author == request.user):
             post.delete()
             return Response({
                 "message": 'Successfully deleted post with id ' + id
             }, status=status.HTTP_204_NO_CONTENT)
-        else:
-            Response(status=status.HTTP_401_UNAUTHORIZED)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
