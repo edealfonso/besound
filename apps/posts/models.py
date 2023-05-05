@@ -2,7 +2,6 @@ import uuid
 from django.db import models
 from apps.custom_users.models import CustomUser
 from solo.models import SingletonModel
-from autoslug import AutoSlugField
 from ckeditor.fields import RichTextField
 
 class RecordPage(SingletonModel):
@@ -14,8 +13,8 @@ class RecordPage(SingletonModel):
     phase4_instruction = RichTextField(blank=True)
     phase4_back = models.CharField(blank=True, max_length=20)
     phase4_forward = models.CharField(blank=True, max_length=20)
-    confirmation_pre_name = models.CharField(blank=True, max_length=100)
-    confirmation_post_name = models.TextField(blank=True)
+    confirmation_pre_title = models.CharField(blank=True, max_length=100)
+    confirmation_post_title = models.TextField(blank=True)
     confirmation_regret = models.TextField(blank=True)
     confirmation_remember = models.TextField(blank=True)
     error_text_1 = models.TextField(blank=True)
@@ -31,11 +30,10 @@ class RecordPage(SingletonModel):
         
 class Post(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=100)
-    slug = AutoSlugField(unique=True, editable=False, populate_from='name')
+    title = models.CharField(max_length=100, unique=True)
     audio = models.FileField(upload_to="audio")
     timestamp = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(to=CustomUser, related_name='post_author', on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.name
+        return self.title

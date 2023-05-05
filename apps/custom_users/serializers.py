@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate
 
 ##### FORMS (post)
 
-class RegisterSerializer(serializers.ModelSerializer):
+class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [

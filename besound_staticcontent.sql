@@ -70,7 +70,7 @@ COPY public.custom_users_registerpage (id, text_1, text_2, button_login, text_3,
 -- Data for Name: posts_recordpage; Type: TABLE DATA; Schema: public; Owner: bsadmin
 --
 
-COPY public.posts_recordpage (id, phase1_instruction, phase2_instruction, phase3_instruction, phase3_back, phase3_forward, phase4_instruction, phase4_back, phase4_forward, confirmation_pre_name, confirmation_post_name, confirmation_regret, confirmation_remember, error_text_1, error_text_2, error_back, error_forward, success) FROM stdin;
+COPY public.posts_recordpage (id, phase1_instruction, phase2_instruction, phase3_instruction, phase3_back, phase3_forward, phase4_instruction, phase4_back, phase4_forward, confirmation_pre_title, confirmation_post_title, confirmation_regret, confirmation_remember, error_text_1, error_text_2, error_back, error_forward, success) FROM stdin;
 1	<p>press circle to <strong>start</strong> recording</p>	<p>press circle to <strong>stop</strong> recording</p>	<p>choose an <strong>effect</strong></p>	Start again	OK	<p>give your sound a <strong>name</strong></p>	Go back	Share!	your sound	has been\r\nsuccessfully posted	I regret all this!\r\nPlease remove the post	Remember, all the posts \r\nare completely anonymous <3	Are you sure?	This action will permanently\r\nerase all audio recordings	Take me back	Accept	your sound has been\r\nsuccessfully deleted
 \.
 

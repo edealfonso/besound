@@ -1,5 +1,5 @@
 from apps.posts.models import Post, RecordPage
-from apps.posts.serializers import PostListSerializer, PostCreateSerializer, RecordPageSerializer
+from apps.posts.serializers import PostSerializer, RecordPageSerializer
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -14,7 +14,7 @@ class PostList_APIView(APIView):
 
     def get(self, request, format=None, *args, **kwargs):
         post = Post.objects.all()
-        serializer = PostListSerializer(post, many=True, context={'request': request})
+        serializer = PostSerializer(post, many=True, context={'request': request})
         return Response(serializer.data)
 
 
@@ -23,7 +23,7 @@ class PostCreate_APIView(APIView):
     parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request, *args, **kwrags):        
-        serializer = PostCreateSerializer(data=request.data, context={'request': request})
+        serializer = PostSerializer(data=request.data, context={'request': request})
 
         if serializer.is_valid():
             serializer.save(author=request.user)
@@ -52,7 +52,9 @@ class PostDelete_APIView(APIView):
         if (post.author == request.user):
             post.delete()
             return Response({
-                "message": 'Successfully deleted post with id ' + id
+                'message': 'Successfully deleted post',
+                'id': id,
+                'title' : post.title
             }, status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 

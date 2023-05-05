@@ -2,17 +2,11 @@ from apps.posts.models import Post, RecordPage
 from rest_framework import serializers
 
 
-class PostListSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Post
-        fields = ['id', 'name', 'slug', 'audio' ]
-
-
-class PostCreateSerializer(serializers.HyperlinkedModelSerializer):
+class PostSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
     class Meta:
         model = Post
-        fields = ['id', 'name', 'audio']
+        fields = ['id', 'title', 'audio']
 
 
 class RecordPageSerializer(serializers.HyperlinkedModelSerializer):

@@ -1,5 +1,5 @@
 from apps.custom_users.models import LoginPage, RegisterPage
-from apps.custom_users.serializers import LoginPageSerializer, RegisterPageSerializer, RegisterSerializer
+from apps.custom_users.serializers import LoginPageSerializer, RegisterPageSerializer, CustomUserSerializer
 
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
@@ -16,7 +16,7 @@ class Register_APIView(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):        
-        serializer = RegisterSerializer(data=request.data)
+        serializer = CustomUserSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save()
