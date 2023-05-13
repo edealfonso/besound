@@ -5,14 +5,14 @@ from solo.models import SingletonModel
 from ckeditor.fields import RichTextField
 
 class RecordPage(SingletonModel):
-    phase1_instruction = RichTextField(blank=True)
-    phase2_instruction = RichTextField(blank=True)
-    phase3_instruction = RichTextField(blank=True)
-    phase3_back = models.CharField(blank=True, max_length=20)
-    phase3_forward = models.CharField(blank=True, max_length=20)
-    phase4_instruction = RichTextField(blank=True)
-    phase4_back = models.CharField(blank=True, max_length=20)
-    phase4_forward = models.CharField(blank=True, max_length=20)
+    step1_instruction = RichTextField(blank=True)
+    step2_instruction = RichTextField(blank=True)
+    step3_instruction = RichTextField(blank=True)
+    step3_back = models.CharField(blank=True, max_length=20)
+    step3_forward = models.CharField(blank=True, max_length=20)
+    step4_instruction = RichTextField(blank=True)
+    step4_back = models.CharField(blank=True, max_length=20)
+    step4_forward = models.CharField(blank=True, max_length=20)
     confirmation_pre_title = models.CharField(blank=True, max_length=100)
     confirmation_post_title = models.TextField(blank=True)
     confirmation_regret = models.TextField(blank=True)

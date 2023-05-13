@@ -13,14 +13,14 @@ class RecordPageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RecordPage
         fields = [
-            'phase1_instruction',
-            'phase2_instruction',
-            'phase3_instruction',
-            'phase3_back',
-            'phase3_forward',
-            'phase4_instruction',
-            'phase4_back',
-            'phase4_forward' ,
+            'step1_instruction',
+            'step2_instruction',
+            'step3_instruction',
+            'step3_back',
+            'step3_forward',
+            'step4_instruction',
+            'step4_back',
+            'step4_forward' ,
             'confirmation_pre_title',
             'confirmation_post_title',
             'confirmation_regret',
