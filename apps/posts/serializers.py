@@ -21,6 +21,7 @@ class RecordPageSerializer(serializers.HyperlinkedModelSerializer):
             'step4_instruction',
             'step4_back',
             'step4_forward' ,
+            'confirmation_generating',
             'confirmation_pre_title',
             'confirmation_post_title',
             'confirmation_regret',
@@ -29,5 +30,6 @@ class RecordPageSerializer(serializers.HyperlinkedModelSerializer):
             'error_text_2',
             'error_back',
             'error_forward',
-            'success'
+            'delete_success',
+            'delete_ko'
             ]
