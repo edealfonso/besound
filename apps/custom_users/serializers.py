@@ -29,8 +29,11 @@ class LoginPageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = LoginPage
         fields = [
+            'intro', 
             'instruction', 
             'button',
+            'signup_intro',
+            'signup_link',
             ]
 
 
@@ -38,11 +41,10 @@ class RegisterPageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RegisterPage
         fields = [
-            'text_1', 
-            'text_2',
-            'button_login',
-            'text_3',
-            'text_4',
+            'login_text',
+            'login_link',
+            'text_part1',
+            'text_part2',
             'button_end',
             'confirmation_pre',
             'confirmation_post',

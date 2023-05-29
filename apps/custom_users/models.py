@@ -4,8 +4,11 @@ from apps.custom_users.manager import CustomUserManager
 from solo.models import SingletonModel
 
 class LoginPage(SingletonModel):
+    intro = models.TextField(blank=True)
     instruction = models.TextField(blank=True)
     button = models.CharField(max_length=255, blank=True)
+    signup_intro = models.CharField(max_length=255, blank=True)
+    signup_link = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         return "Login Page"
@@ -13,11 +16,10 @@ class LoginPage(SingletonModel):
         verbose_name = "Login Page"
 
 class RegisterPage(SingletonModel):
-    text_1 = models.TextField(blank=True)
-    text_2 = models.TextField(blank=True)
-    button_login = models.CharField(max_length=255, blank=True)
-    text_3 = models.TextField(blank=True)
-    text_4 = models.TextField(blank=True)
+    login_text = models.TextField(blank=True)
+    login_link = models.CharField(max_length=255, blank=True)
+    text_part1 = models.TextField(blank=True)
+    text_part2 = models.TextField(blank=True)
     button_end = models.CharField(max_length=255, blank=True)
     confirmation_pre = models.CharField(max_length=20, blank=True)
     confirmation_post = models.TextField(blank=True)

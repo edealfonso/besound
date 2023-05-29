@@ -19,7 +19,7 @@ class PostList_APIView(APIView):
 
 
 class PostCreate_APIView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request, *args, **kwrags):        
