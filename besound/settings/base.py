@@ -25,7 +25,8 @@ BASE_DIR = Path(__file__).ancestor(3)
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-with open("secret.json") as f:
+secret_file = "secret.json" if os.path.isfile("secret.json") else "/home/ubuntu/besound/besound/secret.json"
+with open(secret_file) as f:
     secret = json.loads(f.read())
 
 def get_secret(secret_name, secrets=secret):

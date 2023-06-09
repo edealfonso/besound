@@ -12,7 +12,7 @@ DEBUG = False
 # CSRF_TRUSTED_ORIGINS = ['https://contemporaryartnow.com', 'https://www.contemporaryartnow.com']
 # ALLOWED_HOSTS = ['contemporaryartnow.com', 'www.contemporaryartnow.com']
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://flamboyant-bose.87-106-228-42.plesk.page/']
+# CSRF_TRUSTED_ORIGINS = ['*']
 
 
 # Database
