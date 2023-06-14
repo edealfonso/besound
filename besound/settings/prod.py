@@ -7,7 +7,7 @@ mimetypes.add_type("text/css", ".css", True)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = False
+DEBUG = True
 
 # CSRF_TRUSTED_ORIGINS = ['https://contemporaryartnow.com', 'https://www.contemporaryartnow.com']
 # ALLOWED_HOSTS = ['contemporaryartnow.com', 'www.contemporaryartnow.com']
@@ -33,5 +33,5 @@ DATABASES = {
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-# STATIC_URL = '/staticfiles/'
+STATIC_URL = '/staticfiles/'
 
