@@ -6,6 +6,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 class Register_APIView(APIView):
 
@@ -31,4 +32,11 @@ class Login_APIView(ObtainAuthToken):
         serializer = LoginPageSerializer(page)
         
         return Response(serializer.data)
-    
+
+
+# class checkToken_APIView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request):
+#         content = {'message': 'OK'}
+#         return Response(content)

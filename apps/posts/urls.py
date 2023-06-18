@@ -1,6 +1,5 @@
 from django.urls import include, path
-from .views import PostCreate_APIView, PostDelete_APIView, PostList_APIView
-
+from .views import *
 app_name = 'posts_app'
 
 urlpatterns = [

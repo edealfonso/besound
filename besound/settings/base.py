@@ -38,6 +38,7 @@ def get_secret(secret_name, secrets=secret):
 
 
 SECRET_KEY = get_secret('SECRET_KEY')
+# SECRET_KEY = os.environ["SECRET_KEY"]
 
 
 
