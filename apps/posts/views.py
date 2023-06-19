@@ -51,11 +51,8 @@ class PostDelete_APIView(APIView):
 
         if (post.author == request.user):
             post.delete()
-            return Response({
-                'message': 'Successfully deleted post',
-                'id': id,
-                'title' : post.title
-            }, status=status.HTTP_204_NO_CONTENT)
+            serializer = PostSerializer(post, many=False, context={'request': request})
+            return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
