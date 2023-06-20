@@ -172,6 +172,12 @@ REST_FRAMEWORK = {
 }
 
 # Allowed CORS origins
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000", 'https://besound.vercel.app'
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000", 'https://besound.vercel.app'
+# ]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "*",
 ]
