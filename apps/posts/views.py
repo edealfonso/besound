@@ -50,12 +50,12 @@ class PostDelete_APIView(APIView):
         post = self.get_post(id)
 
         if (post.author == request.user):
-            serializer = PostSerializer(post, many=False, context={'request': request})
+            serializer = PostSerializer(data=post, many=False, context={'request': request})
             if serializer.is_valid():
                 post.delete()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
             post.delete()
-            return Response({'message': 'OK', 'deleted': post.id}, status=status.HTTP_204_NO_CONTENT)
+            return Response({'message': 'OK'}, status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
