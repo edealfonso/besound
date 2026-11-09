@@ -17,6 +17,7 @@ A full update of the project, three years after the first version.
 - Audio files can be stored in Cloudflare R2 (django-storages) when the `R2_*` variables are set; otherwise on local disk.
 - `DATABASE_URL` support (dj-database-url), static files served by whitenoise, gunicorn listens on `$PORT`.
 - `upload_media` command to copy local media files to the configured storage.
+- `load_default_texts` command that fills every page with the texts and About images of the original Figma design (the database with the texts was lost with the old server). It only fills empty fields, unless `--overwrite` is given.
 - `docker-compose.server.yml` and a guide for your own server with Caddy in front, able to host several projects (`docs/DESPLIEGUE-SERVIDOR-PROPIO.md`).
 
 ### Changed

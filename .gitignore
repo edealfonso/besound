@@ -27,4 +27,5 @@ Thumbs.db
 ##########
 
 node_modules/
-package-lock.jsonrender.env
+package-lock.json
+render.env

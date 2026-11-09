@@ -41,7 +41,7 @@ Necesitarás tener a mano: tu copia de los audios (`media/`) y Docker en tu orde
 ## 2. Bucket en Cloudflare R2
 
 1. En el panel de Cloudflare: **R2 Object Storage → Create bucket**. Nombre `besound`, ubicación automática. **Create bucket**.
-2. Dentro del bucket: **Settings → Public access → R2.dev subdomain → Allow**. Apunta el dominio que aparece, del tipo `pub-xxxxxxxx.r2.dev`: es tu `R2_PUBLIC_DOMAIN` (sin `https://`).
+2. Dentro del bucket: **Settings → Public access → R2.dev subdomain → Allow**. Apunta el dominio que aparece, del tipo `pub-xxxxxxxx.r2.dev`: es tu `R2_PUBLIC_DOMAIN` (sin `https://`; si lo pones, también funciona).
 3. Vuelve a **R2 Object Storage → Manage API tokens → Create API token** (o *Create User API token*):
    - Permisos: **Object Read & Write**.
    - Ámbito: **Apply to specific buckets only → besound**.
@@ -73,11 +73,14 @@ docker compose run --rm --env-from-file render.env web python manage.py upload_m
 
 # Crea las tablas en Neon y tu usuario para el admin
 docker compose run --rm --env-from-file render.env web python manage.py createsuperuser
+
+# Rellena los textos de todas las páginas con los del diseño original (luego se editan en el admin)
+docker compose run --rm --env-from-file render.env web python manage.py load_default_texts
 ```
 
 > El plan gratuito de Render no tiene consola, por eso estos pasos se hacen desde tu ordenador.
 >
-> **¿Tienes una copia de la base de datos antigua?** Restáurala en Neon antes de crear el usuario: `docker run --rm -i postgres:17 psql "<DATABASE_URL>" < copia.sql`. Si no, rellena los textos de las páginas desde el admin al final.
+> **¿Tienes una copia de la base de datos antigua?** Restáurala en Neon antes de crear el usuario: `docker run --rm -i postgres:17 psql "<DATABASE_URL>" < copia.sql`. Si no, `load_default_texts` deja todas las páginas con textos y luego los cambias en el admin a tu gusto.
 
 Comprueba en el panel de R2 que aparece la carpeta `audio/` con los archivos.
 

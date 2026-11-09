@@ -60,8 +60,9 @@ if os.environ.get('R2_BUCKET_NAME'):
             'secret_key': os.environ['R2_SECRET_ACCESS_KEY'],
             'region_name': 'auto',
             'signature_version': 's3v4',
-            # Public URL of the bucket (r2.dev subdomain or a custom domain), without https://
-            'custom_domain': os.environ['R2_PUBLIC_DOMAIN'],
+            # Public URL of the bucket (r2.dev subdomain or a custom domain). Accepted with
+            # or without https:// and trailing slash: storages adds the scheme itself
+            'custom_domain': os.environ['R2_PUBLIC_DOMAIN'].split('://')[-1].rstrip('/'),
             'querystring_auth': False,
             'file_overwrite': False,
             'default_acl': None,
