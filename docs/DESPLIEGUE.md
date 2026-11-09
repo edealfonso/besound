@@ -73,11 +73,14 @@ docker compose run --rm --env-from-file render.env web python manage.py upload_m
 
 # Crea las tablas en Neon y tu usuario para el admin
 docker compose run --rm --env-from-file render.env web python manage.py createsuperuser
+
+# Rellena los textos de todas las páginas con unos por defecto (luego se editan en el admin)
+docker compose run --rm --env-from-file render.env web python manage.py load_default_texts
 ```
 
 > El plan gratuito de Render no tiene consola, por eso estos pasos se hacen desde tu ordenador.
 >
-> **¿Tienes una copia de la base de datos antigua?** Restáurala en Neon antes de crear el usuario: `docker run --rm -i postgres:17 psql "<DATABASE_URL>" < copia.sql`. Si no, rellena los textos de las páginas desde el admin al final.
+> **¿Tienes una copia de la base de datos antigua?** Restáurala en Neon antes de crear el usuario: `docker run --rm -i postgres:17 psql "<DATABASE_URL>" < copia.sql`. Si no, `load_default_texts` deja todas las páginas con textos y luego los cambias en el admin a tu gusto.
 
 Comprueba en el panel de R2 que aparece la carpeta `audio/` con los archivos.
 
