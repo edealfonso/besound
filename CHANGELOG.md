@@ -13,7 +13,11 @@ A full update of the project, three years after the first version.
 - Optional pagination of `/v1/posts/list` with `?limit=&offset=` (max 100 per page). Without parameters it still returns the plain list, so the current front-end keeps working.
 - Tests for registration, upload validation, pagination and deletion.
 - `manage.py` (it was excluded from the repo), README in English and Spanish, this changelog.
-- `docker-compose.server.yml` and a deployment guide (`docs/DESPLIEGUE.md`) for a server with Caddy in front, able to host several projects.
+- Free deployment on Render (API) + Neon (PostgreSQL) + Cloudflare R2 (audio files): `render.yaml` Blueprint and step-by-step guide (`docs/DESPLIEGUE.md`).
+- Audio files can be stored in Cloudflare R2 (django-storages) when the `R2_*` variables are set; otherwise on local disk.
+- `DATABASE_URL` support (dj-database-url), static files served by whitenoise, gunicorn listens on `$PORT`.
+- `upload_media` command to copy local media files to the configured storage.
+- `docker-compose.server.yml` and a guide for your own server with Caddy in front, able to host several projects (`docs/DESPLIEGUE-SERVIDOR-PROPIO.md`).
 
 ### Changed
 - Django 4.2 (end of support) → 5.2 LTS. DRF, django-cors-headers and django-solo updated.

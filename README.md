@@ -15,7 +15,8 @@ This repository is the **back-end**: a REST API built with Django that handles u
 - **Safe uploads**: audio files are validated by their real content (WebM, MP4/M4A, MP3, OGG, WAV) and by size, not by the name or type the browser declares.
 - **Ownership**: only the author can delete a sound, and its file is removed from disk too.
 - **Optional pagination** of the sound list with `?limit=&offset=`.
-- **Docker**: PostgreSQL, gunicorn and nginx start with one command.
+- **Docker**: PostgreSQL, gunicorn and nginx start with one command for local development.
+- **Free deployment**: API on Render, database on Neon and audio files on Cloudflare R2, with a one-click Render Blueprint (`render.yaml`).
 - **Secure by default**: secrets out of the repo, CORS limited to the front-end, HTTPS redirect, secure cookies and HSTS in production.
 - **Tested**: registration, upload validation, pagination and deletion.
 
@@ -25,7 +26,8 @@ This repository is the **back-end**: a REST API built with Django that handles u
 |---|---|
 | Back-end | Python 3.12, Django 5.2 LTS, Django REST Framework, PostgreSQL 16 (psycopg 3), django-solo, django-ckeditor-5, django-cors-headers |
 | Front-end ([besound-front](https://github.com/edealfonso/besound-front)) | Next.js, React, Sass, MediaRecorder API |
-| Infrastructure | Docker, Docker Compose, gunicorn, nginx, Vercel (front-end) |
+| Storage | Cloudflare R2 for audio files (django-storages, S3 API), whitenoise for static files |
+| Infrastructure | Docker, Docker Compose, gunicorn, nginx (local) · Render (API), Neon (PostgreSQL), Vercel (front-end) |
 
 ## Quick start
 
@@ -51,7 +53,9 @@ docker compose exec web python manage.py test apps
 
 ## Deployment
 
-Step-by-step guide (in Spanish) to deploy it for free on an Oracle Cloud VM, with HTTPS and room for more projects: [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md).
+Step-by-step guide (in Spanish) to deploy it for free with Render (API), Neon (PostgreSQL) and Cloudflare R2 (audio files), no credit card or server to manage: [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md).
+
+Alternative for your own server (VPS, Oracle Cloud…) with Docker Compose and Caddy, able to host several projects: [docs/DESPLIEGUE-SERVIDOR-PROPIO.md](docs/DESPLIEGUE-SERVIDOR-PROPIO.md).
 
 ## API
 
@@ -79,4 +83,4 @@ The online demo at [besound.vercel.app](https://besound.vercel.app/) is currentl
 
 - [ ] Deploy the API again so the online demo works
 - [ ] CI with GitHub Actions: run the tests on every push
-- [ ] Store audio files in object storage (S3 compatible) instead of the server disk
+- [x] Store audio files in object storage (Cloudflare R2) instead of the server disk

@@ -15,7 +15,8 @@ Este repositorio es el **back-end**: una API REST hecha con Django que gestiona 
 - **Subidas seguras**: los audios se validan por su contenido real (WebM, MP4/M4A, MP3, OGG, WAV) y por tamaño, no por el nombre ni el tipo que declara el navegador.
 - **Propiedad**: solo el autor puede borrar un sonido, y al borrarlo también se elimina el archivo del disco.
 - **Paginación opcional** de la lista de sonidos con `?limit=&offset=`.
-- **Docker**: PostgreSQL, gunicorn y nginx arrancan con un solo comando.
+- **Docker**: PostgreSQL, gunicorn y nginx arrancan con un solo comando para desarrollar en local.
+- **Despliegue gratis**: la API en Render, la base de datos en Neon y los audios en Cloudflare R2, con un Blueprint de Render (`render.yaml`) que lo crea casi todo solo.
 - **Seguro por defecto**: secretos fuera del repo, CORS limitado al front-end, redirección a HTTPS, cookies seguras y HSTS en producción.
 - **Con tests**: registro, validación de audios, paginación y borrado.
 
@@ -25,7 +26,8 @@ Este repositorio es el **back-end**: una API REST hecha con Django que gestiona 
 |---|---|
 | Back-end | Python 3.12, Django 5.2 LTS, Django REST Framework, PostgreSQL 16 (psycopg 3), django-solo, django-ckeditor-5, django-cors-headers |
 | Front-end ([besound-front](https://github.com/edealfonso/besound-front)) | Next.js, React, Sass, API MediaRecorder |
-| Infraestructura | Docker, Docker Compose, gunicorn, nginx, Vercel (front-end) |
+| Almacenamiento | Cloudflare R2 para los audios (django-storages, API S3), whitenoise para los estáticos |
+| Infraestructura | Docker, Docker Compose, gunicorn, nginx (local) · Render (API), Neon (PostgreSQL), Vercel (front-end) |
 
 ## Cómo ejecutarlo
 
@@ -51,7 +53,9 @@ docker compose exec web python manage.py test apps
 
 ## Despliegue
 
-Guía paso a paso para publicarlo gratis en una máquina de Oracle Cloud, con HTTPS y sitio para más proyectos: [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md).
+Guía paso a paso para publicarlo gratis con Render (API), Neon (PostgreSQL) y Cloudflare R2 (audios), sin tarjeta y sin administrar servidores: [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md).
+
+Alternativa para un servidor propio (VPS, Oracle Cloud…) con Docker Compose y Caddy, con sitio para varios proyectos: [docs/DESPLIEGUE-SERVIDOR-PROPIO.md](docs/DESPLIEGUE-SERVIDOR-PROPIO.md).
 
 ## API
 
@@ -79,4 +83,4 @@ La demo online en [besound.vercel.app](https://besound.vercel.app/) está caída
 
 - [ ] Volver a desplegar la API para que funcione la demo online
 - [ ] CI con GitHub Actions: lanzar los tests en cada push
-- [ ] Guardar los audios en un almacenamiento de objetos (compatible con S3) en vez de en el disco del servidor
+- [x] Guardar los audios en un almacenamiento de objetos (Cloudflare R2) en vez de en el disco del servidor
