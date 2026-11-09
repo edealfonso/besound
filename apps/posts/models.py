@@ -2,7 +2,7 @@ import uuid
 from django.db import models
 from apps.custom_users.models import CustomUser
 from solo.models import SingletonModel
-from ckeditor.fields import RichTextField
+from django_ckeditor_5.fields import CKEditor5Field as RichTextField
 
 class RecordPage(SingletonModel):
     step1_instruction = RichTextField(blank=True)
