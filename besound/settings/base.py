@@ -13,12 +13,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import json
 import os
 
-# from pathlib import Path
-from unipath import Path
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).ancestor(3)
-# BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -85,7 +83,7 @@ LOCAL_APPS = (
 
 THIRD_PARTY_APPS = (
     'solo',
-    'ckeditor',
+    'django_ckeditor_5',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders'
@@ -111,7 +109,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
 
         # 'DIRS': [],
-        'DIRS': [BASE_DIR.child('templates')],
+        'DIRS': [BASE_DIR / 'templates'],
 
         'APP_DIRS': True,
         'OPTIONS': {
@@ -159,8 +157,6 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
-
 USE_TZ = True
 
 
@@ -178,15 +174,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 # custom
-STATICFILES_DIRS = [BASE_DIR.child('static'),]
-STATIC_ROOT = BASE_DIR.child('staticfiles')
+STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').is_dir() else []
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR.child('media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Customize auth system
 AUTH_USER_MODEL = "custom_users.CustomUser"
+
+# Rich text editor in the admin (RecordPage instructions)
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': ['bold', 'italic', 'link', '|', 'bulletedList', 'numberedList', '|', 'undo', 'redo'],
+    },
+}
 
 # Rest framework
 REST_FRAMEWORK = {

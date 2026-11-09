@@ -23,7 +23,7 @@ globals().update(https_settings())
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': get_secret('DB_NAME_PROD'),
         'USER': get_secret('USER_PROD'),
         'PASSWORD': get_secret('PASSWORD_PROD'),
