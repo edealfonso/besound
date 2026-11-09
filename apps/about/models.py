@@ -13,7 +13,7 @@ class AboutPage(SingletonModel):
 
 class Step(models.Model):
     text = models.TextField()
-    image = models.FileField(blank=True)
+    image = models.FileField(blank=True, upload_to='about/')
     page = models.ForeignKey(to=AboutPage, related_name='steps', on_delete=models.PROTECT)
 
     def __str__(self):

@@ -1,3 +1,7 @@
+from pathlib import Path
+
+from django.core.files import File
+from django.core.files.storage import default_storage
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
@@ -59,7 +63,11 @@ TEXTS = {
     },
 }
 
-# Steps of the About page: (text, image in media/ or '')
+# Images of the About steps live in the repo, next to the app that uses them,
+# and are copied to the storage (local media/ or R2) under about/.
+DEFAULT_IMAGES = Path(__file__).resolve().parents[3] / 'about' / 'default_images'
+
+# Steps of the About page: (text, image in DEFAULT_IMAGES or '')
 ABOUT_STEPS = [
     ('To record a sound,<br>press the red circle', 'circle.svg'),
     ("While it's filled,<br>recording is taking place,<br>press again to stop recording", 'circle-active.svg'),
@@ -92,6 +100,16 @@ class Command(BaseCommand):
             about.steps.all().delete()
         if not about.steps.exists():
             for text, image in ABOUT_STEPS:
-                Step.objects.create(page=about, text=text, image=image)
+                Step.objects.create(page=about, text=text, image=self.store_image(image))
             self.stdout.write(f'About Page: {len(ABOUT_STEPS)} steps created')
         self.stdout.write(self.style.SUCCESS('Done. Review and edit them in the admin.'))
+
+    def store_image(self, filename):
+        """Copy a default image to the storage if it is not there yet and return its name."""
+        if not filename:
+            return ''
+        name = f'about/{filename}'
+        if not default_storage.exists(name):
+            with (DEFAULT_IMAGES / filename).open('rb') as f:
+                default_storage.save(name, File(f))
+        return name
