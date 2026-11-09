@@ -41,7 +41,7 @@ Necesitarás tener a mano: tu copia de los audios (`media/`) y Docker en tu orde
 ## 2. Bucket en Cloudflare R2
 
 1. En el panel de Cloudflare: **R2 Object Storage → Create bucket**. Nombre `besound`, ubicación automática. **Create bucket**.
-2. Dentro del bucket: **Settings → Public access → R2.dev subdomain → Allow**. Apunta el dominio que aparece, del tipo `pub-xxxxxxxx.r2.dev`: es tu `R2_PUBLIC_DOMAIN` (sin `https://`).
+2. Dentro del bucket: **Settings → Public access → R2.dev subdomain → Allow**. Apunta el dominio que aparece, del tipo `pub-xxxxxxxx.r2.dev`: es tu `R2_PUBLIC_DOMAIN` (sin `https://`; si lo pones, también funciona).
 3. Vuelve a **R2 Object Storage → Manage API tokens → Create API token** (o *Create User API token*):
    - Permisos: **Object Read & Write**.
    - Ámbito: **Apply to specific buckets only → besound**.
