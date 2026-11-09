@@ -178,6 +178,7 @@ STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').is_dir() else 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
+MAX_AUDIO_UPLOAD_MB = int(config('MAX_AUDIO_UPLOAD_MB', '10'))
 MEDIA_ROOT = BASE_DIR / 'media'
 
 

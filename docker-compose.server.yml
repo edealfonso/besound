@@ -1,0 +1,20 @@
+# Extra settings for the server, behind Caddy (see docs/DESPLIEGUE.md):
+#   docker compose -f docker-compose.yml -f docker-compose.server.yml up -d --build
+services:
+  db:
+    restart: unless-stopped
+
+  web:
+    restart: unless-stopped
+
+  nginx:
+    restart: unless-stopped
+    ports: !reset []       # no public port: Caddy is the only entry point
+    networks:
+      default:
+      web:
+        aliases: [besound]
+
+networks:
+  web:
+    external: true

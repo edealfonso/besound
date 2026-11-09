@@ -6,16 +6,22 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.generics import ListAPIView
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
 from django.http import Http404
 
 
-class PostList_APIView(APIView):
+class OptionalPagination(LimitOffsetPagination):
+    """Paginate only when ?limit= is given, so the plain list response keeps working."""
+    default_limit = None
+    max_limit = 100
 
-    def get(self, request, format=None, *args, **kwargs):
-        post = Post.objects.all()
-        serializer = PostSerializer(post, many=True, context={'request': request})
-        return Response(serializer.data)
+
+class PostList_APIView(ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    pagination_class = OptionalPagination
 
 
 class PostCreate_APIView(APIView):
