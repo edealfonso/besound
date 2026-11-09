@@ -74,7 +74,7 @@ docker compose run --rm --env-from-file render.env web python manage.py upload_m
 # Crea las tablas en Neon y tu usuario para el admin
 docker compose run --rm --env-from-file render.env web python manage.py createsuperuser
 
-# Rellena los textos de todas las páginas con unos por defecto (luego se editan en el admin)
+# Rellena los textos de todas las páginas con los del diseño original (luego se editan en el admin)
 docker compose run --rm --env-from-file render.env web python manage.py load_default_texts
 ```
 

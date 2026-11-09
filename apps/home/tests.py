@@ -30,4 +30,18 @@ class LoadDefaultTextsTests(TestCase):
 
         home.refresh_from_db()
         self.assertEqual(home.motto, 'Mi lema')
-        self.assertEqual(AboutPage.get_solo().steps.count(), 3)
+        self.assertEqual(AboutPage.get_solo().steps.count(), 5)
+
+    def test_overwrite_replaces_existing_texts_and_steps(self):
+        home = HomePage.get_solo()
+        home.motto = 'Mi lema'
+        home.save()
+        self.run_command()
+
+        call_command('load_default_texts', '--overwrite', stdout=StringIO())
+
+        home.refresh_from_db()
+        self.assertEqual(home.motto, TEXTS[HomePage]['motto'])
+        steps = AboutPage.get_solo().steps.all()
+        self.assertEqual(steps.count(), 5)
+        self.assertEqual(steps[0].image.name, 'circle.svg')
