@@ -49,9 +49,13 @@ class PostDelete_APIView(APIView):
     def delete(self, request, id, format=None):
         post = self.get_post(id)
 
-        if (post.author == request.user):
-            post.delete()
-            return Response({'message': 'OK'}, status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if post.author != request.user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        audio = post.audio
+        post.delete()
+        if audio:
+            audio.delete(save=False)  # remove the mp3 from disk too
+        return Response({'message': 'OK'}, status=status.HTTP_204_NO_CONTENT)
 
 
