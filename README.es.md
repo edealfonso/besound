@@ -4,6 +4,8 @@
 
 ![Página de inicio de besound: una lista de sonidos grabados, cada uno con una palabra](docs/screenshot.png)
 
+> besound fue mi trabajo final del máster universitario, desarrollado en 2023 y actualizado en 2026 (ver [Mi contribución](#mi-contribución)).
+
 besound es una web para compartir experiencias sonoras breves. Cualquiera puede entrar y escuchar los sonidos que han grabado otras personas, cada uno identificado con una sola palabra. Los usuarios registrados graban hasta 15 segundos de audio desde el navegador, le ponen un título y lo publican, y pueden borrarlo después si se arrepienten.
 
 Este repositorio es el **back-end**: una API REST hecha con Django que gestiona los usuarios, la autenticación y la subida de audios, además de un admin desde el que se editan todos los textos de la web sin tocar código. El front-end es una app de Next.js que está en [besound-front](https://github.com/edealfonso/besound-front).
@@ -72,15 +74,18 @@ Las peticiones autenticadas llevan la cabecera `Authorization: Token <token>`.
 
 ## Demo
 
-La demo online en [besound.vercel.app](https://besound.vercel.app/) está caída de momento: el front-end sigue en Vercel, pero el servidor donde estaba esta API ya no responde. La captura de arriba está hecha ejecutando los dos proyectos en local con datos de ejemplo.
+**[besound.vercel.app](https://besound.vercel.app/)**
+
+La API está en el plan gratuito de Render, que se duerme tras 15 minutos sin visitas: la primera visita después de un rato puede tardar hasta un minuto en cargar.
 
 ## Mi contribución
 
-- En 2023 diseñé y desarrollé besound: esta API REST con Django y el [front-end con Next.js](https://github.com/edealfonso/besound-front).
-- En 2026 lo actualicé y mejoré con la ayuda de [Claude Code](https://claude.com/claude-code): Docker, correcciones de seguridad, Django 5.2 LTS, validación de audios, paginación y tests. Detalles en el [historial de versiones](CHANGELOG.md).
+- En 2023, como trabajo final de mi máster universitario, diseñé y desarrollé besound: el diseño en Figma, esta API REST con Django y el [front-end con Next.js](https://github.com/edealfonso/besound-front).
+- En 2026 lo actualicé y mejoré con la ayuda de [Claude Code](https://claude.com/claude-code): Docker, correcciones de seguridad, Django 5.2 LTS, validación de audios, paginación, tests y un despliegue gratuito en Render, Neon y Cloudflare R2. Detalles en el [historial de versiones](CHANGELOG.md).
 
 ## Próximos pasos
 
-- [ ] Volver a desplegar la API para que funcione la demo online
+- [x] Volver a desplegar la API para que funcione la demo online
 - [ ] CI con GitHub Actions: lanzar los tests en cada push
 - [x] Guardar los audios en un almacenamiento de objetos (Cloudflare R2) en vez de en el disco del servidor
+- [ ] Pasar los textos fijos de la interfaz (botones, instrucciones) del admin al front-end, y dejar en el admin solo el contenido que cambia de verdad

@@ -4,6 +4,8 @@
 
 ![besound home page: a list of recorded sounds, each labelled with a word](docs/screenshot.png)
 
+> besound was my final project for my university master's degree, built in 2023 and updated in 2026 (see [My contribution](#my-contribution)).
+
 besound is a web app for sharing short sound experiences. Anyone can open the site and listen to the sounds other people have recorded, each labelled with a single word. Registered users record up to 15 seconds of audio from the browser, give it a title and publish it, and can delete it later if they change their mind.
 
 This repository is the **back-end**: a REST API built with Django that handles users, authentication and audio uploads, plus an admin where every text shown in the app can be edited without touching code. The front-end is a Next.js app in [besound-front](https://github.com/edealfonso/besound-front).
@@ -72,15 +74,18 @@ Authenticated requests send the header `Authorization: Token <token>`.
 
 ## Demo
 
-The online demo at [besound.vercel.app](https://besound.vercel.app/) is currently offline: the front-end is still on Vercel, but the server that hosted this API is down. The screenshot above was taken running both projects locally with sample data.
+**[besound.vercel.app](https://besound.vercel.app/)**
+
+The API runs on Render's free plan, which sleeps after 15 minutes without visits: the first visit after a while can take up to a minute to load.
 
 ## My contribution
 
-- In 2023 I designed and built besound: this Django REST API and the [Next.js front-end](https://github.com/edealfonso/besound-front).
-- In 2026 I updated and improved it with the help of [Claude Code](https://claude.com/claude-code): Docker, security fixes, Django 5.2 LTS, upload validation, pagination and tests. See the [changelog](CHANGELOG.md).
+- In 2023, as the final project of my university master's degree, I designed and built besound: the Figma design, this Django REST API and the [Next.js front-end](https://github.com/edealfonso/besound-front).
+- In 2026 I updated and improved it with the help of [Claude Code](https://claude.com/claude-code): Docker, security fixes, Django 5.2 LTS, upload validation, pagination, tests and a free deployment on Render, Neon and Cloudflare R2. See the [changelog](CHANGELOG.md).
 
 ## Roadmap
 
-- [ ] Deploy the API again so the online demo works
+- [x] Deploy the API again so the online demo works
 - [ ] CI with GitHub Actions: run the tests on every push
 - [x] Store audio files in object storage (Cloudflare R2) instead of the server disk
+- [ ] Move the fixed interface texts (buttons, instructions) from the admin to the front-end, keeping in the admin only the content that really changes
