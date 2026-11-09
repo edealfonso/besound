@@ -49,6 +49,10 @@ Para lanzar los tests:
 docker compose exec web python manage.py test apps
 ```
 
+## Despliegue
+
+Guía paso a paso para publicarlo gratis en una máquina de Oracle Cloud, con HTTPS y sitio para más proyectos: [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md).
+
 ## API
 
 | Método | Endpoint | Auth | Descripción |

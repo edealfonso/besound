@@ -49,6 +49,10 @@ Run the tests with:
 docker compose exec web python manage.py test apps
 ```
 
+## Deployment
+
+Step-by-step guide (in Spanish) to deploy it for free on an Oracle Cloud VM, with HTTPS and room for more projects: [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md).
+
 ## API
 
 | Method | Endpoint | Auth | Description |

@@ -13,6 +13,7 @@ A full update of the project, three years after the first version.
 - Optional pagination of `/v1/posts/list` with `?limit=&offset=` (max 100 per page). Without parameters it still returns the plain list, so the current front-end keeps working.
 - Tests for registration, upload validation, pagination and deletion.
 - `manage.py` (it was excluded from the repo), README in English and Spanish, this changelog.
+- `docker-compose.server.yml` and a deployment guide (`docs/DESPLIEGUE.md`) for a server with Caddy in front, able to host several projects.
 
 ### Changed
 - Django 4.2 (end of support) → 5.2 LTS. DRF, django-cors-headers and django-solo updated.
@@ -20,6 +21,7 @@ A full update of the project, three years after the first version.
 - psycopg2 → psycopg 3, Unipath → pathlib, Python 3.12.
 - `secret.json` is now optional; settings can also come from environment variables.
 - Deleting someone else's sound returns `403 Forbidden` instead of `401`.
+- nginx keeps the original `X-Forwarded-Proto` when there is another proxy in front, avoiding an HTTPS redirect loop.
 
 ### Fixed
 - `/v1/register` returned the password hash in its response, skipped password validation and briefly stored the password in plain text.
