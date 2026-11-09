@@ -7,12 +7,15 @@ mimetypes.add_type("text/css", ".css", True)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = True
+DEBUG = config('DEBUG', '0') in ('1', 'True', 'true', True)
 
 # CSRF_TRUSTED_ORIGINS = ['https://contemporaryartnow.com', 'https://www.contemporaryartnow.com']
 # ALLOWED_HOSTS = ['contemporaryartnow.com', 'www.contemporaryartnow.com']
-ALLOWED_HOSTS = ['*']
-# CSRF_TRUSTED_ORIGINS = ['*']
+# Set ALLOWED_HOSTS in secret.json (list) or as env var (comma separated) to your API domain
+ALLOWED_HOSTS = config_list('ALLOWED_HOSTS', ['*'])
+
+# Production is always served over https
+globals().update(https_settings())
 
 
 # Database

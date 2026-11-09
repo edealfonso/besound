@@ -1,6 +1,6 @@
 from apps.custom_users.models import CustomUser, LoginPage, RegisterPage
 from rest_framework import serializers
-from django.contrib.auth import authenticate
+from django.contrib.auth.password_validation import validate_password
 
 
 ##### FORMS (post)
@@ -16,12 +16,15 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'birth_date',
             'password',
         ]
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def validate(self, attrs):
+        user = CustomUser(**{k: v for k, v in attrs.items() if k != 'password'})
+        validate_password(attrs['password'], user)
+        return attrs
 
     def create(self, validated_data):
-        user = CustomUser.objects.create(**validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
+        return CustomUser.objects.create_user(**validated_data)
 
 
 ##### PAGES (get)

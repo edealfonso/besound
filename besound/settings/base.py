@@ -25,19 +25,43 @@ BASE_DIR = Path(__file__).ancestor(3)
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-secret_file = "secret.json" if os.path.isfile("secret.json") else "/home/ubuntu/besound/besound/secret.json"
-with open(secret_file) as f:
-    secret = json.loads(f.read())
+from django.core.exceptions import ImproperlyConfigured
+
+# secret.json is optional (Docker uses environment variables instead)
+secret = {}
+for secret_file in ("secret.json", "/home/ubuntu/besound/besound/secret.json"):
+    if os.path.isfile(secret_file):
+        with open(secret_file) as f:
+            secret = json.loads(f.read())
+        break
 
 def get_secret(secret_name, secrets=secret):
     try:
         return secrets[secret_name]
-    except:
+    except KeyError:
         msg = "La variable %s no existe" % secret_name
         raise ImproperlyConfigured(msg)
 
 
-SECRET_KEY = get_secret('SECRET_KEY')
+def config(name, default=None):
+    """Read a setting from the environment, then secret.json, then the default."""
+    if name in os.environ:
+        return os.environ[name]
+    if name in secret:
+        return secret[name]
+    if default is not None:
+        return default
+    raise ImproperlyConfigured("La variable %s no existe" % name)
+
+
+def config_list(name, default):
+    value = config(name, default)
+    if isinstance(value, str):
+        value = [v.strip() for v in value.split(',') if v.strip()]
+    return value
+
+
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY') or get_secret('SECRET_KEY')
 # SECRET_KEY = os.environ["SECRET_KEY"]
 
 
@@ -74,10 +98,10 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'besound.urls'
@@ -171,9 +195,23 @@ REST_FRAMEWORK = {
     )
 }
 
-# Allowed CORS origins
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000", 'https://besound.vercel.app'
-# ]
-CORS_ALLOW_ALL_ORIGINS = True
-# CSRF_TRUSTED_ORIGINS = [ "*" ]
+# Allowed CORS origins (override with CORS_ALLOWED_ORIGINS, comma separated)
+CORS_ALLOWED_ORIGINS = config_list(
+    'CORS_ALLOWED_ORIGINS', ['http://localhost:3000', 'https://besound.vercel.app']
+)
+
+# Needed for the admin login when served over https (e.g. https://api.example.com)
+CSRF_TRUSTED_ORIGINS = config_list('CSRF_TRUSTED_ORIGINS', [])
+
+
+
+def https_settings():
+    """Settings for a site served only over https (behind nginx)."""
+    return dict(
+        SECURE_PROXY_SSL_HEADER=('HTTP_X_FORWARDED_PROTO', 'https'),  # nginx tells Django it was https
+        SECURE_SSL_REDIRECT=True,
+        SESSION_COOKIE_SECURE=True,
+        CSRF_COOKIE_SECURE=True,
+        # Start small; raise to 31536000 (1 year) once everything works over https
+        SECURE_HSTS_SECONDS=int(config('HSTS_SECONDS', '3600')),
+    )
