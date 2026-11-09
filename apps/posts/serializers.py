@@ -1,4 +1,5 @@
 from apps.posts.models import Post, RecordPage
+from apps.posts.validators import validate_audio_file
 from rest_framework import serializers
 
 
@@ -7,6 +8,9 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'title', 'audio']
+
+    def validate_audio(self, file):
+        return validate_audio_file(file)
 
 
 class RecordPageSerializer(serializers.HyperlinkedModelSerializer):
