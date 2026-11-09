@@ -1,4 +1,4 @@
-# Extra settings for the server, behind Caddy (see docs/DESPLIEGUE.md):
+# Extra settings for the server, behind Caddy (see docs/DESPLIEGUE-SERVIDOR-PROPIO.md):
 #   docker compose -f docker-compose.yml -f docker-compose.server.yml up -d --build
 services:
   db:

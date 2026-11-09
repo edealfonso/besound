@@ -21,4 +21,6 @@ USER appuser
 EXPOSE 8000
 
 ENTRYPOINT ["docker/entrypoint.sh"]
-CMD ["gunicorn", "besound.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+# PORT is set by Render; WEB_CONCURRENCY (gunicorn workers) defaults to 2 to fit in 512 MB
+ENV WEB_CONCURRENCY=2
+CMD ["sh", "-c", "exec gunicorn besound.wsgi:application --bind 0.0.0.0:${PORT:-8000}"]

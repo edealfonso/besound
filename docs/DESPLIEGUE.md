@@ -1,244 +1,132 @@
-# Despliegue en Oracle Cloud (gratis)
+# Despliegue gratis: Render + Neon + Cloudflare R2
 
-Guía para publicar el back-end de besound en una máquina virtual gratuita de Oracle Cloud, con HTTPS y sin comprar dominio. La misma máquina sirve para alojar más proyectos después.
+Guía para publicar el back-end de besound sin pagar y sin administrar ningún servidor.
 
 ## Qué vas a montar
 
 ```
 Navegador ──► besound.vercel.app (front-end, Vercel)
      │
-     └──► https://besound.<IP>.sslip.io
-              │
-        ┌─────▼──────────── máquina de Oracle ───────────────────┐
-        │  Caddy (puertos 80/443, certificados HTTPS automáticos) │
-        │     ├──► besound: nginx ─► Django (gunicorn) ─► Postgres │
-        │     └──► (más proyectos en el futuro)                    │
-        └──────────────────────────────────────────────────────────┘
+     ├──► https://besound-api.onrender.com   API Django (Render)
+     │          └──► Postgres (Neon)
+     │
+     └──► https://pub-xxxx.r2.dev/audio/...    audios (Cloudflare R2)
 ```
 
-- **Caddy** es la única puerta de entrada: recibe todo el tráfico, consigue los certificados HTTPS de Let's Encrypt y reparte cada petición al proyecto que toca según el nombre.
-- **sslip.io** convierte la IP de la máquina en un nombre de dominio gratis: `besound.132-145-10-20.sslip.io` apunta a `132.145.10.20`. No hay que registrarse ni configurar nada.
+| Parte | Servicio | Gratis | Si nadie entra en semanas |
+|---|---|---|---|
+| Front-end | Vercel | sí | sigue funcionando |
+| API | Render | sí, sin tarjeta | se duerme; la primera visita tarda 30–60 s |
+| Base de datos | Neon | sí, sin tarjeta | se duerme y se despierta sola al instante |
+| Audios | Cloudflare R2 | sí, hasta 10 GB | sigue funcionando |
 
-En toda la guía, cambia `132.145.10.20` / `132-145-10-20` por la IP de tu máquina.
+Ningún servicio se pausa de forma que haya que reactivarlo a mano. Los planes gratuitos pueden cambiar: revisa las condiciones de cada uno.
+
+Necesitarás tener a mano: tu copia de los audios (`media/`) y Docker en tu ordenador.
 
 ---
 
-## 1. Crear la máquina
+## 1. Base de datos en Neon
 
-1. Crea una cuenta en [Oracle Cloud Free Tier](https://www.oracle.com/cloud/free/). Piden tarjeta para verificar, pero las máquinas «Always Free» no se cobran.
-2. Menú → **Compute → Instances → Create instance**.
-3. **Image:** Canonical Ubuntu 24.04.
-4. **Shape:** *Ampere* → `VM.Standard.A1.Flex` (tiene la etiqueta *Always Free eligible*). Con 1–2 OCPU y 6–12 GB de memoria vas sobrada.
-5. **SSH keys:** elige *Generate a key pair* y descarga la clave privada (por ejemplo `oracle.key`), o sube tu clave pública si ya tienes una.
-6. **Networking:** deja que cree la red y marca *Assign a public IPv4 address*.
-7. Pulsa **Create** y apunta la **IP pública** cuando la máquina esté en verde.
+1. Entra en [neon.com](https://neon.com) y regístrate (puedes usar tu cuenta de GitHub).
+2. **Create project**: nombre `besound`, región **AWS Europe Central 1 (Frankfurt)**, la misma que usaremos en Render.
+3. En el panel del proyecto pulsa **Connect**, desactiva **Connection pooling** y copia la cadena de conexión. Tiene esta forma:
 
-> Si sale *Out of capacity*, prueba otro *Availability domain* o vuelve a intentarlo más tarde: pasa a menudo con las máquinas gratuitas.
+   ```
+   postgresql://neondb_owner:xxxxx@ep-algo-123456.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+   ```
 
-## 2. Abrir los puertos 80 y 443
+   Guárdala: es tu `DATABASE_URL`.
 
-Hay que abrirlos en **dos sitios** (el olvido más típico es el segundo):
+## 2. Bucket en Cloudflare R2
 
-**a) En Oracle:** en la página de la instancia → enlace de la *Subnet* → *Security Lists* → *Default Security List* → **Add Ingress Rules**:
+1. En el panel de Cloudflare: **R2 Object Storage → Create bucket**. Nombre `besound`, ubicación automática. **Create bucket**.
+2. Dentro del bucket: **Settings → Public access → R2.dev subdomain → Allow**. Apunta el dominio que aparece, del tipo `pub-xxxxxxxx.r2.dev`: es tu `R2_PUBLIC_DOMAIN` (sin `https://`).
+3. Vuelve a **R2 Object Storage → Manage API tokens → Create API token** (o *Create User API token*):
+   - Permisos: **Object Read & Write**.
+   - Ámbito: **Apply to specific buckets only → besound**.
+   - **Create**, y copia los tres valores que salen (solo se muestran una vez):
+     - **Access Key ID** → `R2_ACCESS_KEY_ID`
+     - **Secret Access Key** → `R2_SECRET_ACCESS_KEY`
+     - **Endpoint** del tipo `https://<id de cuenta>.r2.cloudflarestorage.com` → `R2_ENDPOINT_URL`
 
-| Source CIDR | IP Protocol | Destination Port |
-|---|---|---|
-| `0.0.0.0/0` | TCP | `80` |
-| `0.0.0.0/0` | TCP | `443` |
+> El dominio `r2.dev` es perfecto para una demo, pero Cloudflare limita su velocidad. Si algún día tienes dominio propio, puedes conectarlo al bucket (*Settings → Custom Domains*) y cambiar `R2_PUBLIC_DOMAIN`.
 
-**b) En Ubuntu:** las imágenes de Oracle traen un cortafuegos propio. Entra en la máquina desde tu ordenador:
+## 3. Subir los audios y preparar la base de datos (desde tu ordenador)
+
+En la carpeta del proyecto, crea un archivo `render.env` (no se sube a git) con los valores de los pasos anteriores:
+
+```
+DATABASE_URL=postgresql://neondb_owner:xxxxx@ep-algo-123456.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+R2_BUCKET_NAME=besound
+R2_ENDPOINT_URL=https://<id de cuenta>.r2.cloudflarestorage.com
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
+R2_PUBLIC_DOMAIN=pub-xxxxxxxx.r2.dev
+```
+
+Y lanza estos comandos, que usan la imagen de Docker del proyecto pero conectada a Neon y R2:
 
 ```bash
-chmod 600 ~/Downloads/oracle.key
-ssh -i ~/Downloads/oracle.key ubuntu@132.145.10.20
+# Sube todo media/ al bucket (los audios y los SVG). Si lo repites, no duplica nada
+docker compose run --rm --env-from-file render.env web python manage.py upload_media
+
+# Crea las tablas en Neon y tu usuario para el admin
+docker compose run --rm --env-from-file render.env web python manage.py createsuperuser
 ```
 
-y ya dentro:
+> El plan gratuito de Render no tiene consola, por eso estos pasos se hacen desde tu ordenador.
+>
+> **¿Tienes una copia de la base de datos antigua?** Restáurala en Neon antes de crear el usuario: `docker run --rm -i postgres:17 psql "<DATABASE_URL>" < copia.sql`. Si no, rellena los textos de las páginas desde el admin al final.
 
-```bash
-sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT
-sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 443 -j ACCEPT
-sudo netfilter-persistent save
-```
+Comprueba en el panel de R2 que aparece la carpeta `audio/` con los archivos.
 
-## 3. Instalar Docker
+## 4. La API en Render
 
-```bash
-sudo apt update && sudo apt upgrade -y
-curl -fsSL https://get.docker.com | sudo sh
-sudo usermod -aG docker ubuntu
-exit
-```
-
-Vuelve a entrar con `ssh` (para que se aplique el grupo `docker`) y comprueba que funciona con `docker run --rm hello-world`.
-
-## 4. Caddy (una sola vez por máquina)
-
-```bash
-docker network create web
-sudo mkdir -p /srv/caddy && sudo chown ubuntu: /srv/caddy && cd /srv/caddy
-```
-
-Crea `/srv/caddy/docker-compose.yml`:
-
-```yaml
-services:
-  caddy:
-    image: caddy:2
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
-      - caddy_config:/config
-    networks:
-      - web
-
-volumes:
-  caddy_data:
-  caddy_config:
-
-networks:
-  web:
-    external: true
-```
-
-Y `/srv/caddy/Caddyfile`, con un bloque por proyecto:
-
-```
-besound.132-145-10-20.sslip.io {
-    reverse_proxy besound:80
-}
-```
-
-Todavía no lo arranques: primero besound (paso 5), si no Caddy no encuentra a quién enviar las peticiones.
-
-## 5. besound
-
-### Descargar el código y configurar
-
-```bash
-sudo mkdir -p /srv/besound && sudo chown ubuntu: /srv/besound
-git clone https://github.com/edealfonso/besound.git /srv/besound
-cd /srv/besound
-cp .env.example .env
-```
-
-Edita `.env` (`nano .env`):
-
-```
-DJANGO_SECRET_KEY=           # genera una con: openssl rand -hex 32
-DJANGO_DEBUG=0
-DJANGO_ALLOWED_HOSTS=besound.132-145-10-20.sslip.io
-DJANGO_CSRF_TRUSTED_ORIGINS=https://besound.132-145-10-20.sslip.io
-
-POSTGRES_DB=besound
-POSTGRES_USER=besound
-POSTGRES_PASSWORD=           # genera otra con: openssl rand -hex 16
-```
-
-### Subir los audios
-
-Desde **tu ordenador** (en la carpeta del proyecto, donde está tu copia de los audios):
-
-```bash
-ssh -i ~/Downloads/oracle.key ubuntu@132.145.10.20 mkdir -p /srv/besound/media
-rsync -avz -e "ssh -i ~/Downloads/oracle.key" media/ ubuntu@132.145.10.20:/srv/besound/media/
-```
-
-### Arrancar
-
-De vuelta en la máquina:
-
-```bash
-cd /srv/besound
-docker compose -f docker-compose.yml -f docker-compose.server.yml up -d --build
-docker compose exec web python manage.py createsuperuser
-```
-
-`docker-compose.server.yml` añade lo que hace falta en el servidor: reinicio automático, ningún puerto público (solo se entra por Caddy) y la conexión a la red `web` con el nombre `besound`.
-
-> **¿Tienes una copia de la base de datos antigua?** Restáurala antes del primer arranque completo: `docker compose up -d db`, luego `docker compose exec -T db psql -U besound besound < copia.sql`, y después el `up -d --build` de arriba (las migraciones se aplican solas). Si no la tienes, rellena los textos de las páginas desde el admin.
-
-### Encender Caddy
-
-```bash
-cd /srv/caddy
-docker compose up -d
-docker compose logs -f     # espera a ver "certificate obtained successfully", luego Ctrl+C
-```
+1. Entra en [render.com](https://render.com) y regístrate **con tu cuenta de GitHub** (no pide tarjeta).
+2. **New → Blueprint**, conecta tu GitHub si te lo pide y elige el repositorio **besound**. Render lee el archivo `render.yaml` del repo y propone crear el servicio `besound-api` (plan *Free*, Frankfurt).
+3. Te pedirá los valores que no están en el repo. Pega los de tu `render.env`: `DATABASE_URL`, `R2_BUCKET_NAME`, `R2_ENDPOINT_URL`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` y `R2_PUBLIC_DOMAIN`. La clave secreta de Django se genera sola.
+4. **Apply**. La primera vez tarda unos minutos en construir la imagen. Cuando el servicio esté en verde (*Live*), su dirección aparece arriba: `https://besound-api.onrender.com` (o con algún sufijo si ese nombre está cogido).
 
 Comprueba en el navegador:
 
-- https://besound.132-145-10-20.sslip.io/v1/home → devuelve JSON
-- https://besound.132-145-10-20.sslip.io/admin/ → el admin, con candado HTTPS
+- `https://besound-api.onrender.com/v1/posts/list` → JSON con enlaces a `pub-xxxxxxxx.r2.dev`
+- `https://besound-api.onrender.com/admin/` → el admin (entra con el usuario del paso 3)
 
-## 6. Conectar el front-end de Vercel
+No hay que configurar el dominio en ningún sitio: Django usa automáticamente el que le asigna Render.
+
+## 5. Conectar el front-end de Vercel
 
 1. En Vercel: proyecto **besound-front** → *Settings* → *Environment Variables*.
-2. Cambia `BACKEND_SERVER` a `https://besound.132-145-10-20.sslip.io/` (**con la barra final**: el front le añade `v1/` detrás).
+2. Cambia `BACKEND_SERVER` a `https://besound-api.onrender.com/` (**con la barra final**: el front le añade `v1/` detrás).
 3. *Deployments* → en el último, **⋯ → Redeploy**.
 
-Abre https://besound.vercel.app: la demo vuelve a funcionar. Si el front estuviera en otro dominio, añádelo en el `.env` de besound con `CORS_ALLOWED_ORIGINS=https://besound.vercel.app,https://otro-dominio`.
+Abre https://besound.vercel.app: la demo vuelve a funcionar.
 
 ---
 
-## Añadir otro proyecto a la misma máquina
-
-1. En el `docker-compose` del proyecto, conecta su servidor web a la red `web` con un nombre propio, igual que hace `docker-compose.server.yml` con `besound`:
-   ```yaml
-   networks:
-     default:
-     web:
-       aliases: [miproyecto]
-   ```
-   y sin publicar puertos.
-2. Añade un bloque al `Caddyfile`:
-   ```
-   miproyecto.132-145-10-20.sslip.io {
-       reverse_proxy miproyecto:80
-   }
-   ```
-3. Recarga Caddy: `cd /srv/caddy && docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile`.
-
 ## Mantenimiento
 
-**Actualizar besound** después de mergear cambios en GitHub:
-
-```bash
-cd /srv/besound && git pull
-docker compose -f docker-compose.yml -f docker-compose.server.yml up -d --build
-```
-
-**Copias de seguridad.** Oracle puede recuperar máquinas gratuitas que llevan mucho tiempo sin uso, así que guarda copias fuera de la máquina. Desde tu ordenador:
-
-```bash
-ssh -i ~/Downloads/oracle.key ubuntu@132.145.10.20 \
-  "cd /srv/besound && docker compose exec -T db pg_dump -U besound besound" > besound-$(date +%F).sql
-rsync -avz -e "ssh -i ~/Downloads/oracle.key" ubuntu@132.145.10.20:/srv/besound/media/ media/
-```
-
-**Ver qué pasa:** `docker compose logs -f web` (en `/srv/besound`) o `docker compose logs -f` (en `/srv/caddy`).
-
-## Pasar a un dominio propio
-
-Si más adelante compras un dominio (por ejemplo `elsadealfonso.es`):
-
-1. En el panel del dominio, crea un registro **A**: `besound` → `132.145.10.20`.
-2. En el `Caddyfile`, cambia `besound.132-145-10-20.sslip.io` por `besound.elsadealfonso.es` y recarga Caddy.
-3. En `/srv/besound/.env`, cambia `DJANGO_ALLOWED_HOSTS` y `DJANGO_CSRF_TRUSTED_ORIGINS`, y vuelve a lanzar el `up -d`.
-4. En Vercel, cambia `BACKEND_SERVER` y haz *Redeploy*.
+- **Actualizar:** Render vuelve a desplegar solo cada vez que se mergea algo en `main`.
+- **Logs:** en Render, servicio `besound-api` → *Logs*.
+- **Copia de la base de datos** (desde tu ordenador; usa la misma versión de Postgres que tu proyecto de Neon):
+  ```bash
+  docker run --rm postgres:17 pg_dump "<DATABASE_URL>" > besound-$(date +%F).sql
+  ```
+- **Los audios** quedan en R2; puedes descargarlos desde su panel.
 
 ## Problemas frecuentes
 
 | Síntoma | Causa probable |
 |---|---|
-| La página no carga (timeout) | Faltan los puertos 80/443 en Oracle **o** en `iptables` (paso 2) |
-| Caddy no consigue el certificado | Lo mismo: Let's Encrypt necesita llegar al puerto 80/443. Si el error menciona *rate limit*, usa `nip.io` en vez de `sslip.io` (funciona igual: `besound.132-145-10-20.nip.io`) |
-| `Bad Request (400)` | El nombre no está en `DJANGO_ALLOWED_HOSTS` del `.env` |
-| `502 Bad Gateway` | besound aún está arrancando (espera unos segundos) o no está en la red `web`: revisa que lo arrancaste con `-f docker-compose.server.yml` |
-| Error CSRF al entrar al admin | `DJANGO_CSRF_TRUSTED_ORIGINS` debe ser exactamente `https://` + el nombre |
-| La web de Vercel dice *Connection to database server failed* | `BACKEND_SERVER` mal escrito (¿falta la barra final?) o no has hecho *Redeploy* |
+| La primera visita tarda casi un minuto | Normal: Render estaba dormido. Las siguientes van rápidas |
+| Vercel muestra *Connection to database server failed* en la primera visita | Render tardó en despertar más de lo que Vercel espera. Recarga pasado un minuto. Si pasa siempre, revisa en Vercel *Settings → Functions* que *Fluid compute* esté activado (permite esperas más largas) |
+| Vercel muestra ese error siempre | `BACKEND_SERVER` mal escrito (¿falta la barra final?) o no has hecho *Redeploy* |
+| El despliegue en Render falla al arrancar | Revisa los *Logs*: casi siempre es una variable mal copiada (`DATABASE_URL` completa, con `?sslmode=require`) |
+| Los sonidos salen en la lista pero no suenan | `R2_PUBLIC_DOMAIN` mal escrito, o el acceso público `r2.dev` del bucket no está activado (paso 2) |
+| Error al subir un sonido desde la web | Permisos del token de R2: tiene que ser *Object Read & Write* sobre el bucket `besound` |
+| `Bad Request (400)` | Estás entrando por un dominio distinto al de Render. Añádelo en Render a la variable `DJANGO_ALLOWED_HOSTS` |
+
+## Alternativa: servidor propio
+
+Si algún día tienes una máquina propia (Oracle Cloud, un VPS…), en [DESPLIEGUE-SERVIDOR-PROPIO.md](DESPLIEGUE-SERVIDOR-PROPIO.md) está la guía con Docker Compose y Caddy, preparada para alojar varios proyectos en la misma máquina.
