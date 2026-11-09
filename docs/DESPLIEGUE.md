@@ -68,13 +68,14 @@ R2_PUBLIC_DOMAIN=pub-xxxxxxxx.r2.dev
 Y lanza estos comandos, que usan la imagen de Docker del proyecto pero conectada a Neon y R2:
 
 ```bash
-# Sube todo media/ al bucket (los audios y los SVG). Si lo repites, no duplica nada
+# Sube tus audios de media/ al bucket. Si lo repites, no duplica nada
 docker compose run --rm --env-from-file render.env web python manage.py upload_media
 
 # Crea las tablas en Neon y tu usuario para el admin
 docker compose run --rm --env-from-file render.env web python manage.py createsuperuser
 
-# Rellena los textos de todas las páginas con los del diseño original (luego se editan en el admin)
+# Rellena los textos de todas las páginas con los del diseño original y sube
+# las imágenes del About a about/ en el bucket (luego se editan en el admin)
 docker compose run --rm --env-from-file render.env web python manage.py load_default_texts
 ```
 
@@ -82,7 +83,7 @@ docker compose run --rm --env-from-file render.env web python manage.py load_def
 >
 > **¿Tienes una copia de la base de datos antigua?** Restáurala en Neon antes de crear el usuario: `docker run --rm -i postgres:17 psql "<DATABASE_URL>" < copia.sql`. Si no, `load_default_texts` deja todas las páginas con textos y luego los cambias en el admin a tu gusto.
 
-Comprueba en el panel de R2 que aparece la carpeta `audio/` con los archivos.
+Comprueba en el panel de R2 que aparecen las carpetas `audio/` (los audios) y `about/` (las imágenes del About).
 
 ## 4. La API en Render
 

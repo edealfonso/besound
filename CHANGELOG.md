@@ -2,6 +2,15 @@
 
 All notable changes to this project. Format based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [Unreleased]
+
+### Changed
+- The default About images now live in `apps/about/default_images/` instead of `media/`, which is fully out of git. `load_default_texts` copies them to the storage under `about/`, so `upload_media` is only needed for audio files.
+- Images uploaded to the About steps are stored under `about/`, apart from the audio files in `audio/`.
+
+### Removed
+- `media/logo.svg`, which was not used.
+
 ## [2.0.0] - 2026-11-09
 
 A full update of the project, three years after the first version.

@@ -1,14 +1,26 @@
+import shutil
+import tempfile
 from io import StringIO
 
+from django.core.files.storage import default_storage
 from django.core.management import call_command
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from apps.about.models import AboutPage
 from apps.home.management.commands.load_default_texts import TEXTS
 from apps.home.models import HomePage
 
 
+TEST_MEDIA = tempfile.mkdtemp()
+
+
+@override_settings(MEDIA_ROOT=TEST_MEDIA)
 class LoadDefaultTextsTests(TestCase):
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(TEST_MEDIA, ignore_errors=True)
+        super().tearDownClass()
+
     def run_command(self):
         call_command('load_default_texts', stdout=StringIO())
 
@@ -44,4 +56,12 @@ class LoadDefaultTextsTests(TestCase):
         self.assertEqual(home.motto, TEXTS[HomePage]['motto'])
         steps = AboutPage.get_solo().steps.all()
         self.assertEqual(steps.count(), 5)
-        self.assertEqual(steps[0].image.name, 'circle.svg')
+        self.assertEqual(steps[0].image.name, 'about/circle.svg')
+
+    def test_copies_the_about_images_to_the_storage(self):
+        self.run_command()
+        for name in ['about/circle.svg', 'about/circle-active.svg', 'about/effects.svg']:
+            self.assertTrue(default_storage.exists(name))
+        self.run_command()  # running it again does not duplicate them
+        self.assertEqual(sorted(default_storage.listdir('about')[1]),
+                         ['circle-active.svg', 'circle.svg', 'effects.svg'])
